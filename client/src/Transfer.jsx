@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { secp256k1 }  from 'ethereum-cryptography/secp256k1';
+import * as secp  from 'ethereum-cryptography/secp256k1';
+import { keccak256 } from "ethereum-cryptography/keccak"
 import { utf8ToBytes } from 'ethereum-cryptography/utils';
 import server from "./server";
 
@@ -7,12 +8,12 @@ function Transfer({ balance, setBalance, privateKey}) {
   const [sendAmount, setSendAmount] = useState("");
   const [recipient, setRecipient] = useState("");
   const amountBytes = utf8ToBytes(`"${sendAmount}"`);
-  
+  const amountHash = keccak256(amountBytes);
   const setValue = (setter) => (evt) => setter(evt.target.value);
 
   async function transfer(evt) {
     evt.preventDefault();
-    const signature = await secp256k1.sign(amountBytes, privateKey);
+    const signature = await secp.secp256k1.sign(amountHash, privateKey, { recovery: true});
     try {
       const {
         data: { balance },

@@ -1,4 +1,4 @@
-import * as secp from 'ethereum-cryptography/secp256k1';
+import * as secp from "ethereum-cryptography/secp256k1";
 
 import { toHex } from 'ethereum-cryptography/utils';
 import server from "./server";
@@ -6,9 +6,6 @@ import server from "./server";
 function Wallet({ address, setAddress, balance, setBalance, privateKey, setPrivateKey }) {
   async function onChange(evt) {
     
-   // const balanceBytes = utf8ToBytes(balance);
-    //const balanceHash = keccak256(balanceBytes);
-    //const signedMessage = await secp.secp256k1.sign(balanceHash, privateKey, { recovered: true });
     const privateKey = evt.target.value;
     const address = toHex(secp.secp256k1.getPublicKey(privateKey));
     setPrivateKey(privateKey);
