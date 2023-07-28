@@ -1,8 +1,19 @@
+import * as secp from 'ethereum-cryptography/secp256k1';
+
+import { toHex } from 'ethereum-cryptography/utils';
 import server from "./server";
 
-function Wallet({ address, setAddress, balance, setBalance }) {
+function Wallet({ address, setAddress, balance, setBalance, privateKey, setPrivateKey }) {
   async function onChange(evt) {
-    const address = evt.target.value;
+    
+   // const balanceBytes = utf8ToBytes(balance);
+    //const balanceHash = keccak256(balanceBytes);
+    //const signedMessage = await secp.secp256k1.sign(balanceHash, privateKey, { recovered: true });
+    const privateKey = evt.target.value;
+    const address = toHex(secp.secp256k1.getPublicKey(privateKey));
+    setPrivateKey(privateKey);
+
+    
     setAddress(address);
     if (address) {
       const {
@@ -19,10 +30,12 @@ function Wallet({ address, setAddress, balance, setBalance }) {
       <h1>Your Wallet</h1>
 
       <label>
-        Wallet Address
-        <input placeholder="Type an address, for example: 0x1" value={address} onChange={onChange}></input>
+        Private Key
+        <input placeholder="Type a private key, for example: 0x1" value={privateKey} onChange={onChange}></input>
       </label>
-
+      <label>
+        Address: {address.slice(0,20)} ...
+      </label>
       <div className="balance">Balance: {balance}</div>
     </div>
   );
